@@ -34,7 +34,7 @@ void loop() {
     pixelFill(0,12, red);
     pixel.show();
     delay (500);
-    pixel.clear();
+    //pixel.clear();
   
 }
 void pixelFill(int start, int end, int color){
