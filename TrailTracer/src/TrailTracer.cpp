@@ -17,6 +17,9 @@
 #include "Wire.h"
 #include "Adafruit_SSD1306.h"
 #include "Adafruit_GFX.h"
+#include "neopixel.h"
+#include "Colors.h"
+
 
 TCPClient TheClient;
 Adafruit_MQTT_SPARK mqtt(&TheClient, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
@@ -44,6 +47,11 @@ float ttCrash;
 ///OLED
 const int OLED = -1;
 const int OLEDADDRESS = 0x3C;
+//neopixel
+int p;
+const int PIXELCOUNT = 12;
+unsigned int currentTimePixels, lastTimePixels;
+
 
 //variables for MPU6050
 const float ACCEL_SCALE_FACTOR = 16384.0; //defauly for +-2g range
@@ -64,12 +72,14 @@ bool MQTT_ping(); //publishing
 
 void getGPS(float *latittude, float *longitude, int *satellites, float *speed);
 void createEventPayLoad (float lat, float lon);
+void pixelFill(int start, int end, int color);
 
 Adafruit_SSD1306 display(OLED);
 
 
-
 SYSTEM_MODE(AUTOMATIC);
+//Adafruit_NeoPixel pixel(PIXELCOUNT, SPI1, WS2812B); // Works with Photon 2
+Adafruit_NeoPixel pixel(PIXELCOUNT, D2, WS2812B); // Works with Photon 2
 
 
 void setup() {
@@ -117,6 +127,8 @@ display.setTextSize(1);
 display.setRotation(0);
 display.setTextColor(WHITE);
 
+pixel.begin(); //intialize neopixels
+
 }
 
 
@@ -155,6 +167,7 @@ if (millis() - lastGPS > UPDATE) {
 
 }
 
+
 dateTime = Time.timeStr(); //current date and time from particle cloud
 timeOnly = dateTime.substring(11,19); //extracting time from dateTime
 if (millis()- mpuLastTime > 100000) {
@@ -180,7 +193,7 @@ if (Wire.available() == 6) {
   //Serial.printf("Total Shock %f\n", totalShock);
   Serial.printf("Total Shock %f:%f:%f:%f\n", totalShock, gx,gy, gz);
 
-  crashThreshold = 3; //in g's
+  crashThreshold = 2; //in g's
 
   if (totalShock >= crashThreshold) {
    if (mqtt.Update()) {
@@ -189,13 +202,17 @@ if (Wire.available() == 6) {
    }
     
   }
-//   currentTime = millis ();
-// if ((currentTime - lastTime)>10000) {
-//   lastTime = millis();
-}
-}
 
+}
+ 
+  if ((currentTimePixels - lastTimePixels)>10000) {
 
+  pixel.setBrightness(30);
+  pixelFill(0, 12,red);
+  pixel.show();
+  lastTimePixels = millis();
+  }
+}
 
 void getGPS(float *latitude, float *longitude, int *satellites, float *speed) {
 int theHour;
@@ -218,6 +235,7 @@ if (GPS.fix) {
   }
 
 }
+
 
 void createEventPayLoad (float lat, float lon) {
   JsonWriterStatic <256> jw;
@@ -265,4 +283,11 @@ bool MQTT_ping() {
       last = millis();
     }
   return pingStatus;
+}
+
+void pixelFill(int start, int end, int color) {
+  int p;
+  for (p=start; p<=end; p++) {
+    pixel.setPixelColor (p, color);
+  }
 }
