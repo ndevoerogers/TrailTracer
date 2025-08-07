@@ -64,8 +64,8 @@ void loop() {
   Wire.write(0x3B); // Start reading from ACCEL_XOUT_H
   Wire.endTransmission(false);
   Wire.requestFrom(0x68, 6, true);
-  if (Wire.available() == 6)
-  {
+  if (Wire.available() == 6){
+  
     float accel_x = ((Wire.read() << 8 | Wire.read()) / ACCEL_SCALE_FACTOR) * GRAVITY;
     float accel_y = ((Wire.read() << 8 | Wire.read()) / ACCEL_SCALE_FACTOR) * GRAVITY;
     float accel_z = ((Wire.read() << 8 | Wire.read()) / ACCEL_SCALE_FACTOR) * GRAVITY;
@@ -73,7 +73,7 @@ void loop() {
     accelArray[arrayIndex] = sqrt((accel_x * accel_x) + (accel_y * accel_y) + (accel_z * accel_z));
     // Update array index
     arrayIndex++;
-    if (arrayIndex >= ARRAY_SIZE)
+    if (arrayIndex <= ARRAY_SIZE)
     {
       arrayIndex = 0; // Reset index for next cycle
     }
