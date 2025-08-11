@@ -20,7 +20,8 @@ const int PIXELCOUNT = 12;
 
 void pixelFill(int start, int end, int color);
 
-Adafruit_NeoPixel pixel (PIXELCOUNT, SPI1, WS2812B);
+// Adafruit_NeoPixel pixel (PIXELCOUNT, SPI1, WS2812B);
+Adafruit_NeoPixel pixel(PIXELCOUNT, D2, WS2812B);
 
 void setup() {
 

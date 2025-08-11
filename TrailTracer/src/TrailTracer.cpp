@@ -152,7 +152,7 @@ if (millis() - lastGPS > UPDATE) {
   getGPS(&lat,&lon,&sat,&speed);
   Serial.printf("Lat: %0.6f, Lon: %0.6f, Satellites: %i, Speed: %0.2f\n",lat, lon, sat, speed);
   display.setCursor (0,0);
-  display.printf(" Lat: %0.6f\n Lon: %0.6f\n Alt: %0.6f\n Satellites: %i\n Speed: %0.2f\n",lat, lon, alt, sat, speed);
+  display.printf(" Lat: %0.6f\n Lon: %0.6f\n Satellites: %i\n Speed: %0.2f\n",lat, lon, sat, speed);
   display.display();
   if((millis()-lastTime > 6000)) {
     if(mqtt.Update()) {
@@ -193,7 +193,7 @@ if (Wire.available() == 6) {
   //Serial.printf("Total Shock %f\n", totalShock);
   Serial.printf("Total Shock %f:%f:%f:%f\n", totalShock, gx,gy, gz);
 
-  crashThreshold = 2; //in g's
+  crashThreshold = 5; //in g's
 
   if (totalShock >= crashThreshold) {
    if (mqtt.Update()) {
@@ -205,13 +205,13 @@ if (Wire.available() == 6) {
 
 }
  
-  if ((currentTimePixels - lastTimePixels)>10000) {
+  // if ((currentTimePixels - lastTimePixels)>10000) {
 
-  pixel.setBrightness(30);
-  pixelFill(0, 12,red);
-  pixel.show();
-  lastTimePixels = millis();
-  }
+  // pixel.setBrightness(30);
+  // pixelFill(0, 12,red);
+  // pixel.show();
+  // lastTimePixels = millis();
+  // }
 }
 
 void getGPS(float *latitude, float *longitude, int *satellites, float *speed) {
@@ -285,9 +285,9 @@ bool MQTT_ping() {
   return pingStatus;
 }
 
-void pixelFill(int start, int end, int color) {
-  int p;
-  for (p=start; p<=end; p++) {
-    pixel.setPixelColor (p, color);
-  }
-}
+// void pixelFill(int start, int end, int color) {
+//   int p;
+//   for (p=start; p<=end; p++) {
+//     pixel.setPixelColor (p, color);
+//   }
+//}
