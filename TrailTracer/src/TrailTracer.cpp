@@ -193,7 +193,7 @@ if (Wire.available() == 6) {
   //Serial.printf("Total Shock %f\n", totalShock);
   Serial.printf("Total Shock %f:%f:%f:%f\n", totalShock, gx,gy, gz);
 
-  crashThreshold = 5; //in g's
+  crashThreshold = 3; //in g's
 
   if (totalShock >= crashThreshold) {
    if (mqtt.Update()) {
@@ -204,14 +204,12 @@ if (Wire.available() == 6) {
   }
 
 }
- 
-  // if ((currentTimePixels - lastTimePixels)>10000) {
-
-  // pixel.setBrightness(30);
-  // pixelFill(0, 12,red);
-  // pixel.show();
-  // lastTimePixels = millis();
-  // }
+ if ((millis() - lastTimePixels)>1000) {
+    pixel.setBrightness(90);
+    pixelFill(0, 12,red);
+   pixel.show();
+   lastTimePixels = millis();
+}
 }
 
 void getGPS(float *latitude, float *longitude, int *satellites, float *speed) {
@@ -283,11 +281,18 @@ bool MQTT_ping() {
       last = millis();
     }
   return pingStatus;
+
+ 
 }
 
-// void pixelFill(int start, int end, int color) {
-//   int p;
-//   for (p=start; p<=end; p++) {
-//     pixel.setPixelColor (p, color);
-//   }
-//}
+
+void pixelFill(int start, int end, int color) {
+
+
+
+   int p;
+   for (p=start; p<=end; p++) {
+     pixel.setPixelColor (p, color);
+   }
+
+   }

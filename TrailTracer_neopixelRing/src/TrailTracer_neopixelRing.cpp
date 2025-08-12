@@ -31,7 +31,7 @@ pixel.begin();
 
 void loop() {
 
-    pixel.setBrightness(30);
+    pixel.setBrightness(70);
     pixelFill(0,12, red);
     pixel.show();
     delay (500);
