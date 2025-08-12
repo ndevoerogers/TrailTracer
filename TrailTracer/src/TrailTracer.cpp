@@ -29,6 +29,7 @@ Adafruit_GPS GPS(&Wire);
 Adafruit_MQTT_Publish TrailGPS = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME"/feeds/trailtracergps");
 Adafruit_MQTT_Publish TrailSpeed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/trailtracerspeed");
 Adafruit_MQTT_Publish TrailCrash = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/trailtracercrash");
+Adafruit_MQTT_Publish TrailText = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/trailtracertext");
 
 unsigned int last, lastTime;
 const int TIMEZONE = -6;
@@ -44,6 +45,7 @@ unsigned int lastGPS;
 float ttGPS;
 float ttSpeed;
 float ttCrash;
+float ttText;
 ///OLED
 const int OLED = -1;
 const int OLEDADDRESS = 0x3C;
@@ -79,7 +81,7 @@ Adafruit_SSD1306 display(OLED);
 
 SYSTEM_MODE(AUTOMATIC);
 //Adafruit_NeoPixel pixel(PIXELCOUNT, SPI1, WS2812B); // Works with Photon 2
-Adafruit_NeoPixel pixel(PIXELCOUNT, D2, WS2812B); // Works with Photon 2
+Adafruit_NeoPixel pixel(PIXELCOUNT, D2, WS2812B); // Works with Boron
 
 
 void setup() {
@@ -198,6 +200,7 @@ if (Wire.available() == 6) {
   if (totalShock >= crashThreshold) {
    if (mqtt.Update()) {
     TrailCrash.publish("Possible Crash- Check GPS");
+    TrailText.publish(totalShock);
     delay(2000);
    }
     
